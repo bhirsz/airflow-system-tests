@@ -1,12 +1,24 @@
 ---
 steps:
-- id: 'Run multiple tests'
+- id: 'Clone Apache Airflow repository'
+  name: 'gcr.io/cloud-builders/git'
+  dir: 'system_tests'
+  args: ['clone', '--depth', '1', '-b', '${_BRANCH}', '--single-branch', '${_AIRFLOW_REPO}']
+- id: 'Generate list of tests to run'
   name: 'gcr.io/cloud-builders/gcloud'
+  dir: 'system_tests/airflow'
   entrypoint: 'bash'
   args:
   - '-c'
+  - find tests/system/providers/google/ -type f -name "example_*.py" >> tests.txt
+- id: 'Run multiple tests'
+  name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  timeout: '7200s'
+  args:
+  - '-c'
   - |
-    bash ./run_system_tests.sh ${_ENV_ID} ${BUILD_ID}
+    bash ./run_system_tests.sh ${_ENV_ID} ${BUILD_ID} 'system_tests/airflow/tests.txt'
 - id: 'Wait for tests to complete'
   name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: 'python3'
@@ -17,5 +29,7 @@ steps:
   args: ['upload_results.py', '${BUILD_ID}']
 
 substitutions:
+  _AIRFLOW_REPO: 'https://github.com/apache/airflow'
+  _BRANCH: 'main'
   _ENV_ID: bhirsz
 tags: ["system-test-trigger"]

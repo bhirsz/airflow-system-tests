@@ -3,9 +3,8 @@ set -e
 
 ENV_ID=$1
 TAG_NAME=$2
+LIST_FILE=$3
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-LIST_FILE=$DIR/tests.txt
 
 if [[ ! -f "${LIST_FILE}" ]]; then
     echo "File does not exist."
