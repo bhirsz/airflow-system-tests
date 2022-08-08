@@ -1,0 +1,21 @@
+---
+steps:
+- id: 'Run multiple tests'
+  name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    bash ./run_system_tests.sh ${_ENV_ID} ${BUILD_ID}
+- id: 'Wait for tests to complete'
+  name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'python3'
+  args: ['wait_for_tests.py', '${BUILD_ID}']
+- id: 'Upload results'
+  name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'python3'
+  args: ['upload_results.py', '${BUILD_ID}']
+
+substitutions:
+  _ENV_ID: bhirsz
+tags: ["system-test-trigger"]

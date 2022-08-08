@@ -1,0 +1,18 @@
+---
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+  - 'build'
+  - '--build-arg'
+  - 'DOCKER_COMPOSE_VERSION=${_DOCKER_COMPOSE_VERSION}'
+  - '-t'
+  - 'gcr.io/$PROJECT_ID/airflow-system-tests-env:latest'
+  - '.'
+- name: 'gcr.io/$PROJECT_ID/airflow-system-tests-env'
+  args: ['echo', 'test']
+
+substitutions:
+  _DOCKER_COMPOSE_VERSION: 1.29.2
+images:
+- 'gcr.io/$PROJECT_ID/airflow-system-tests-env:latest'
+tags: ['system-tests']

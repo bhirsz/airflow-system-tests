@@ -1,0 +1,27 @@
+# Build config file for building dev cloud airflow system tests image.
+#
+# To use:
+# Submit the build:
+# $ gcloud builds submit --timeout=1h --config airflow_system_tests_only_dev_build.yaml --substitutions=_DOCKER_TAG=$USER-latest . --project cloud-airflow-public
+#
+# Note: You may replace "cloud-airflow-public" with your own desired project.
+
+# default substitution values
+steps:
+# Build.
+- name: "gcr.io/cloud-builders/docker"
+  args:
+    [
+      "build",
+      '--build-arg',
+      'DOCKER_COMPOSE_VERSION=${_DOCKER_COMPOSE_VERSION}',
+      '-t',
+      'gcr.io/$PROJECT_ID/airflow-system-tests-image:${_DOCKER_TAG}',
+      '.',
+    ]
+
+substitutions:
+  _DOCKER_COMPOSE_VERSION: 1.29.2
+  _DOCKER_TAG: latest
+images:
+- "gcr.io/$PROJECT_ID/airflow-system-tests-image:${_DOCKER_TAG}"

@@ -1,0 +1,32 @@
+---
+steps:
+- id: 'Clone Apache Airflow repository'
+  name: 'gcr.io/cloud-builders/git'
+  dir: 'system_tests'
+  args: ['clone', '--depth', '1', '-b', '${_BRANCH}', '--single-branch', '${_AIRFLOW_REPO}']
+- id: 'Run system tests'
+  # name: 'gcr.io/$PROJECT_ID/airflow-system-tests-image:latest'
+  name: 'ghcr.io/apache/airflow/main/ci/python3.8:9fa05ead1705c72f7f729a809f89577aef6a002a'
+  env:
+  - 'TERM=xterm'
+  - 'SKIP_IN_CONTAINER_CHECK=true'
+  - 'FORCE_ANSWER_TO_QUESTIONS=yes'
+  - 'GITHUB_ACTIONS=false'
+  - 'SYSTEM_TESTS_GCP_PROJECT=$_SYSTEM_TESTS_GCP_PROJECT'
+  - 'SYSTEM_TESTS_ENV_ID=$_ENV_ID'
+  dir: 'system_tests/airflow'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - pytest --system=google ${_TEST}
+substitutions:
+  _AIRFLOW_REPO: 'https://github.com/apache/airflow'
+  _BRANCH: 'main'
+  _SYSTEM_TESTS_GCP_PROJECT: $PROJECT_ID
+  _ENV_ID: "manual"
+  _TEST: |
+    tests/system/providers/google/cloud/text_to_speech/example_text_to_speech.py
+  _TAG_NAME: manual
+options:
+  dynamic_substitutions: true
+tags: ["system-test", "${_TEST_NAME}", "${_TAG_NAME}"]
