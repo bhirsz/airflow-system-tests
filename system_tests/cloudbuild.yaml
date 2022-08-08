@@ -24,7 +24,7 @@ steps:
   entrypoint: 'bash'
   args:
   - '-c'
-  - find tests/system/providers/google/ -type f -name "example_*.py" >> tests.txt
+  - find tests/system/providers/google/ -type f -name "${_TEST_PATTERN}" >> tests.txt
 - id: 'Run multiple tests'
   name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: 'bash'
@@ -45,5 +45,6 @@ steps:
 substitutions:
   _AIRFLOW_REPO: 'https://github.com/apache/airflow'
   _BRANCH: 'main'
+  _TEST_PATTERN: 'example_*.py'
   _ENV_ID: bhirsz
 tags: ["system-test-trigger"]

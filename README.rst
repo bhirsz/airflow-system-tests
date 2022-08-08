@@ -23,6 +23,9 @@ To run all system tests run from ``system_tests`` directory::
 
     gcloud builds submit .
 
-To run single system tests (TODO):
+To run single or selected system tests override _TEST_PATTERN variable. This
+variable is used to find pytest test files inside tests/system directory::
+
+    gcloud builds submit . --substitutions=_TEST_PATTERN="example*gcs*.py"
 
 from branch:
