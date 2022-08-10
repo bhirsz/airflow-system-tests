@@ -18,6 +18,33 @@ steps:
   name: 'gcr.io/cloud-builders/git'
   dir: 'system_tests'
   args: ['clone', '--depth', '1', '-b', '${_BRANCH}', '--single-branch', '${_AIRFLOW_REPO}']
+#- id: 'Install Breeze'
+#  name: 'gcr.io/$PROJECT_ID/airflow-system-tests-builder:latest'
+#  dir: 'system_tests/airflow'
+#  args: ['python3.7', '-m', 'pipx', 'install', '--editable', './dev/breeze/']
+#- id: 'Run Breeze'
+#  name: 'gcr.io/$PROJECT_ID/airflow-system-tests-builder:latest'
+#  dir: 'system_tests/airflow'
+#  args: ['breeze', 'ci-image', 'build', '--tag-as-latest', '--dryrun']
+#- id: 'Install pipx'
+#  name: 'python'
+#  entrypoint: 'pip'
+#  dir: 'system_tests/airflow'
+#  args: ['install', '--user', 'pipx']
+#- id: 'Ensure pipx path'
+#  name: 'python'
+#  entrypoint: 'python'
+#  dir: 'system_tests/airflow'
+#  args: ['-m', 'pipx', 'ensurepath']
+- id: 'Install and run Breeze'
+  name: 'gcr.io/$PROJECT_ID/airflow-system-tests-builder:latest'
+  entrypoint: 'bash'
+  args: ['./install_breeze_build_ci.sh']
+#- id: 'Build test runner image'
+#  name: 'python'
+#  entrypoint: 'breeze'
+#  dir: 'system_tests/airflow'
+#  args: ['ci-image', 'build', '--tag-as-latest', '--dryrun']
 - id: 'Generate list of tests to run'
   name: 'gcr.io/cloud-builders/gcloud'
   dir: 'system_tests/airflow'
