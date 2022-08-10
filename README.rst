@@ -29,3 +29,23 @@ variable is used to find pytest test files inside tests/system directory::
     gcloud builds submit . --substitutions=_TEST_PATTERN="example*gcs*.py"
 
 from branch:
+
+    gcloud builds submit . --substitutions=_BRANCH=<branch_name>
+
+Tests overview
+---------------
+Cloud Build steps:
+ - clone the AIrflow repository
+ - build test runner image
+ - Discover tests to run
+ - For every system test trigger separate Cloud Build
+ - Poll triggered jobs for completion
+ - Once all tests finish, upload the status to BigQuery ``system_tests_results.results`` table
+
+Once tests are triggered you can view their status using following command::
+
+    gcloud builds list --filter "tags='TRIGGER_ID'" --format="table[box,margin=3,title='system tests'](id,status,tags,logUrl)"
+
+``TRIGGER_ID`` can be taken from execution log. Each triggered tests will also
+output build log url in the command line window.
+After the tests finish you can check their results in ``system_tests_results.results`` BigQuery table.
