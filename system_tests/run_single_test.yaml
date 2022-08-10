@@ -35,4 +35,6 @@ substitutions:
   _TEST: |
     tests/system/providers/google/cloud/text_to_speech/example_text_to_speech.py
   _TAG_NAME: manual
+options:
+  dynamic_substitutions: true
 tags: ["system-test", "${_TEST_NAME}", "${_TAG_NAME}"]
