@@ -32,7 +32,6 @@ steps:
 - id: 'Run multiple tests'
   name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: 'bash'
-  timeout: '7200s'
   args:
   - '-c'
   - |
@@ -52,3 +51,4 @@ substitutions:
   _TEST_PATTERN: 'example_*.py'
   _ENV_ID: bhirsz
 tags: ["system-test-trigger"]
+timeout: '7200s'

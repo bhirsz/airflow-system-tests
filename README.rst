@@ -35,7 +35,7 @@ from branch:
 Tests overview
 ---------------
 Cloud Build steps:
- - clone the AIrflow repository
+ - clone the Airflow repository
  - build test runner image
  - Discover tests to run
  - For every system test trigger separate Cloud Build
