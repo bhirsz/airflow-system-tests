@@ -38,3 +38,4 @@ substitutions:
 options:
   dynamic_substitutions: true
 tags: ["system-test", "${_TEST_NAME}", "${_TAG_NAME}"]
+timeout: '7200s'
