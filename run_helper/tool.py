@@ -27,11 +27,12 @@ QUERY_BUILDS_CMD = (
     "gcloud builds list "
     "--filter tags='{build_id}' "
     "--format json("
-    "status,substitutions._TEST_NAME,"
+    "status,logUrl,substitutions._TEST_NAME,"
     "timing.BUILD.startTime,"
     "timing.BUILD.endTime"
     ")"
 )
+STATUS_COLORS = {"FAILURE": "red", "SUCCESS": "green", "TIMEOUT": "blue"}
 
 
 def get_builds(cmd):
@@ -57,12 +58,20 @@ def get_results_table(cmd, filter_status):
     builds = get_builds(cmd)
     for build in builds:
         test_name = build["substitutions"]["_TEST_NAME"]
+        url = build["logUrl"]
+        name_with_url = f"[link={url}]{test_name}[/link]"
         status = build["status"]
+        if status in STATUS_COLORS:
+            colorized_status = (
+                f"[{STATUS_COLORS[status]}]{status}[/{STATUS_COLORS[status]}]"
+            )
+        else:
+            colorized_status = status
         if filter_status is not None and status != filter_status:
             continue
         start_time = parse_timestamp(build["timing"]["BUILD"]["startTime"])
         end_time = parse_timestamp(build["timing"]["BUILD"]["endTime"])
-        table.add_row(test_name, status, start_time, end_time)
+        table.add_row(name_with_url, colorized_status, start_time, end_time)
     return table
 
 
