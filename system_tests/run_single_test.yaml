@@ -14,7 +14,11 @@
 
 ---
 steps:
-- id: 'Run system tests'
+- id: 'Set test status status to in progress'
+  name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'python3'
+  args: ['update_test_status.py', '${BUILD_ID}', '${_TEST_NAME}', 'IN PROGRESS']
+- id: 'Run system test'
   # name: 'gcr.io/$PROJECT_ID/airflow-system-tests-image:latest'
   name: 'ghcr.io/apache/airflow/main/ci/python3.7:latest'
   env:
@@ -28,7 +32,18 @@ steps:
   entrypoint: 'bash'
   args:
   - '-c'
-  - pytest --system=google ${_TEST}
+  - pytest --system=google ${_TEST} || echo "fail" > /workspace/build-status.txt
+- id: 'Set test status status'
+  name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      if [[ $(< /workspace/build-status.txt) == "fail" ]]; then
+         python3 update_test_status.py ${BUILD_ID} ${_TEST_NAME} FAILURE
+      else
+          python3 update_test_status.py ${BUILD_ID} ${_TEST_NAME} SUCCESS
+      fi
 substitutions:
   _SYSTEM_TESTS_GCP_PROJECT: $PROJECT_ID
   _ENV_ID: "manual"
