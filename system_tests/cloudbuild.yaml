@@ -36,14 +36,6 @@ steps:
   - '-c'
   - |
     bash ./run_system_tests.sh ${_ENV_ID} ${BUILD_ID} 'system_tests/airflow/tests.txt'
-- id: 'Wait for tests to complete'
-  name: 'gcr.io/cloud-builders/gcloud'
-  entrypoint: 'python3'
-  args: ['wait_for_tests.py', '${BUILD_ID}']
-- id: 'Upload results'
-  name: 'gcr.io/cloud-builders/gcloud'
-  entrypoint: 'python3'
-  args: ['upload_results.py', '${BUILD_ID}']
 
 substitutions:
   _AIRFLOW_REPO: 'https://github.com/apache/airflow'

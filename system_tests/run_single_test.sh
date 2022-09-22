@@ -25,6 +25,6 @@ echo "Running test: ${TEST_WITHOUT_PY}"
 
 gcloud builds submit . \
     --config run_single_test.yaml \
-    --timeout=3600 \
+    --timeout=7200 \
     --substitutions _TEST="${TEST_PATH}",_ENV_ID="${ENV_ID}",_TEST_NAME="${TEST_WITHOUT_PY}",_TAG_NAME="${TAG_NAME}" \
     --async
