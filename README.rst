@@ -19,7 +19,31 @@ This repository contains scripts for running Airflow system tests in CI.
 Your local environment need to have gcloud tool and you need to be authenticated
 to gcloud project. This project will be used to run the tests.
 
-To run all system tests run from ``system_tests`` directory::
+Setup
+----------------------
+
+You can configure project used for test execution by running::
+
+    gcloud config set project PROJECT_ID
+
+Apache Airflow community uses ``apache-airflow-testing`` project.
+
+It may be needed to re-authenticate::
+
+    gcloud auth application-default login
+    gcloud auth login
+
+Before first run you need to build the image for building the Airflow CI images.
+Run following from the ``test_runner_builder`` directory::
+
+    gcloud builds submit .
+
+This image needs to be build only once per project.
+
+Running the tests
+------------------
+
+To run all system tests run from the ``system_tests`` directory::
 
     gcloud builds submit .
 
@@ -28,7 +52,7 @@ variable is used to find pytest test files inside tests/system directory::
 
     gcloud builds submit . --substitutions=_TEST_PATTERN="example*gcs*.py"
 
-from branch:
+from branch::
 
     gcloud builds submit . --substitutions=_BRANCH=<branch_name>
 
@@ -38,14 +62,10 @@ Cloud Build steps:
  - clone the Airflow repository
  - build test runner image
  - Discover tests to run
- - For every system test trigger separate Cloud Build
- - Poll triggered jobs for completion
- - Once all tests finish, upload the status to BigQuery ``system_tests_results.results`` table
+ - For every system test trigger separate Cloud Build:
+   - Set test state in BigQuery ``system_tests_results.results`` table to IN PROGRESS
+   - Run the test
+   - Update test state in BigQuery ``system_tests_results.results`` table with test state
 
-Once tests are triggered you can view their status using following command::
-
-    gcloud builds list --filter "tags='TRIGGER_ID'" --format="table[box,margin=3,title='system tests'](id,status,tags,logUrl)"
-
-``TRIGGER_ID`` can be taken from execution log. Each triggered tests will also
-output build log url in the command line window.
 After the tests finish you can check their results in ``system_tests_results.results`` BigQuery table.
+Individual test results are also visible in triggered Cloud Builds.
