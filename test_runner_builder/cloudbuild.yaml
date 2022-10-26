@@ -22,7 +22,7 @@ steps:
   - '-t'
   - 'gcr.io/$PROJECT_ID/airflow-system-tests-builder:latest'
   - '.'
-- name: 'gcr.io/$PROJECT_ID/airflow-system-tests-env'
+- name: 'gcr.io/$PROJECT_ID/airflow-system-tests-builder'
   args: ['echo', 'test']
 
 substitutions:
