@@ -40,6 +40,11 @@ Run following from the ``test_runner_builder`` directory::
 
 This image needs to be build only once per project.
 
+Create Big Query tables for storing past results (not required)::
+
+    bq mk --dataset system_tests_results
+    bq mk --table system_tests_results.results execution_id:STRING,test:STRING,status:STRING,start_time:TIMESTAMP,end_time:TIMESTAMP
+
 Running the tests
 ------------------
 

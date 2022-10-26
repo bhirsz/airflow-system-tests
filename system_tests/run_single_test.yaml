@@ -17,7 +17,7 @@ steps:
 - id: 'Set test status status to in progress'
   name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: 'python3'
-  args: ['update_test_status.py', '${BUILD_ID}', '${_TEST_NAME}', 'IN PROGRESS']
+  args: ['update_test_status.py', '${BUILD_ID}', '${_TEST_NAME}', 'IN PROGRESS', "${PROJECT_ID}"]
 - id: 'Run system test'
   # name: 'gcr.io/$PROJECT_ID/airflow-system-tests-image:latest'
   name: 'ghcr.io/apache/airflow/main/ci/python3.7:latest'
@@ -40,9 +40,9 @@ steps:
     - '-c'
     - |
       if [[ $(< /workspace/build-status.txt) == "fail" ]]; then
-         python3 update_test_status.py ${BUILD_ID} ${_TEST_NAME} FAILURE
+         python3 update_test_status.py ${BUILD_ID} ${_TEST_NAME} FAILURE ${PROJECT_ID}
       else
-          python3 update_test_status.py ${BUILD_ID} ${_TEST_NAME} SUCCESS
+          python3 update_test_status.py ${BUILD_ID} ${_TEST_NAME} SUCCESS ${PROJECT_ID}
       fi
 substitutions:
   _SYSTEM_TESTS_GCP_PROJECT: $PROJECT_ID

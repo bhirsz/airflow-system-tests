@@ -19,9 +19,10 @@ from datetime import datetime
 BUILD_ID = sys.argv[1]
 TEST_NAME = sys.argv[2]
 TEST_STATUS = sys.argv[3]
+PROJECT_ID = sys.argv[4]
 
 
-RESULTS_TABLE = "airflow-system-tests-303516.system_tests_results.results"
+RESULTS_TABLE = f"{PROJECT_ID}.system_tests_results.results"
 INSERT_RESULTS_QUERY = "INSERT INTO `{table}` VALUES('{run_id}','{test_name}','{test_result}',TIMESTAMP('{start_time}'),TIMESTAMP('{end_time}'));"
 UPDATE_RESULTS_QUERY = "UPDATE `{table}` SET status = '{test_result}', end_time = '{end_time}' WHERE execution_id = '{run_id}' AND test = '{test_name}';"
 
